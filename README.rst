@@ -2,17 +2,17 @@
 django-generic-helpers
 ======================
 
-.. image:: https://badge.fury.io/py/django-ulogin.png
-    :target: http://badge.fury.io/py/django-ulogin
+.. image:: https://badge.fury.io/py/django-generic-helpers.png
+    :target: http://badge.fury.io/py/django-generic-helpers
     
-.. image:: https://travis-ci.org/marazmiki/django-ulogin.png?branch=master
-        :target: https://travis-ci.org/marazmiki/django-ulogin
+.. image:: https://travis-ci.org/marazmiki/django-generic-helpers.png?branch=master
+        :target: https://travis-ci.org/marazmiki/django-generic-helpers
 
-.. image:: https://coveralls.io/repos/marazmiki/django-ulogin/badge.png?branch=master
-  :target: https://coveralls.io/r/marazmiki/django-ulogin?branch=master
+.. image:: https://coveralls.io/repos/marazmiki/django-generic-helpers/badge.png?branch=master
+  :target: https://coveralls.io/r/marazmiki/django-generic-helpers?branch=master
 
-.. image:: https://pypip.in/d/django-ulogin/badge.png
-        :target: https://pypi.python.org/pypi/django-ulogin
+.. image:: https://pypip.in/d/django-generic-helpers/badge.png
+        :target: https://pypi.python.org/pypi/django-generic-helpers
 
 This app provides some snippets (such as abstract models and managers
 with some useful methods) to simplyfy creation of another pluggable apps.
