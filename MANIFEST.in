@@ -1,0 +1,9 @@
+include README.rst
+include AUTHORS
+include MANIFEST.in
+include setup.py
+include generic_helpers\__init__.py
+include generic_helpers\managers.py
+include generic_helpers\models.py
+include generic_helpers\tests\__init__.py
+include generic_helpers\tests\models.py
