@@ -12,12 +12,11 @@ env:
 
 install:
   - pip install -q Django==$DJANGO
-  - pip install -q requests
   - pip install -q flake8
   - python setup.py install
 
 before_script:
-  - flake8 --exclude=migrations --ignore=W391,E501,E225 django_ulogin
+  - flake8 --exclude=migrations --ignore=W391,E501,E225 generic_helpers
 
 script:
   - python tests.py
