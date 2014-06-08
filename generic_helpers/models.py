@@ -40,7 +40,8 @@ def generic_relation_factory(ct_field='content_type', fk_field='object_pk',
     if blank:
         class_name = class_name_blank or 'Blank%s' % class_name
 
-    class_name = six.binary_type(class_name)
+    if not six.PY3:
+        class_name = six.binary_type(class_name)
 
     docstring = """
     %(class_name)s
