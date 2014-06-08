@@ -7,7 +7,7 @@ from __future__ import division
 from django.utils import six
 
 
-VERSION = (0, 2, 2)
+VERSION = (0, 3, 0)
 
 
 def get_version():
