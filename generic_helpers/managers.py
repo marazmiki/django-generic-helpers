@@ -5,6 +5,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 from django.db import models
+from django import get_version
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -45,9 +46,13 @@ class GenericRelationManager(models.Manager):
         self.gr_field = kwargs.pop('gr_field', 'content_object')
         super(GenericRelationManager, self).__init__(*args, **kwargs)
 
-    def get_query_set(self):
+    def get_queryset(self):
         return GenericQuerySet(self.model, ct_field=self.ct_field,
                                fk_field=self.fk_field, gr_field=self.gr_field)
+
+    if get_version() < '1.7':
+        def get_query_set(self):
+            return self.get_queryset()
 
     def get_for_object(self, content_object):
         return self.get_query_set().filter(**{
