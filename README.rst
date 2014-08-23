@@ -19,14 +19,15 @@ with some useful methods) to simplyfy creation of another pluggable apps.
 
 The license is MIT.
 
+
 Installation
 ============
 
-::
+.. code:: bash
 
     pip install django-generic-helpers
 
-After you can add app 'generic_helpers' to your INSTALLED_APPS. If you aren't
+After you can add the `generic_helpers` app into your `INSTALLED_APPS`. If you aren't
 want to run test, you can skip this step.
 
 Usage
@@ -34,6 +35,8 @@ Usage
 
 To use this app, just import GenericRelationModel class from
 generic_helpers.models package and inherit your model from it:
+
+.. code:: python
 
     from django.db import models
     from generic_helpers.models import GenericRelationModel
@@ -43,6 +46,8 @@ generic_helpers.models package and inherit your model from it:
 
 Now MyModel class has content_object attribute and you can create MyModel
 instances using generic relation:
+
+.. code:: python
 
     >>> from django.contrib.auth.models import User
     >>> user = User.objects.get(pk=1)
@@ -55,6 +60,9 @@ In this example how you can see we have used User.
 
 Also your model manager has a get_for_object method for quick filtering by
 content_object complex field:
+
+.. code:: python
+
 
     >>> from django.contrib.auth.models import User
     >>> user = User.objects.get(pk=1)
