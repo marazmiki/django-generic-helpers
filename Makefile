@@ -12,5 +12,15 @@ flake8:
 
 
 coverage:
-	coverage run --include=generic_helpers/* ./tests.py
+	coverage run --include=generic_helpers/* setup.py test
 	coverage html
+
+
+coveralls:
+	coveralls --config_file=coverage.rc
+
+clean:
+	rm -rf *.egg *.egg-info
+	rm -rf htmlcov
+	rm -f .coverage
+	find . -name "*.pyc" -exec rm -rf {} \;
