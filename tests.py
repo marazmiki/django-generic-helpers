@@ -3,6 +3,7 @@
 
 from django import get_version
 from django.conf import settings
+
 import sys
 import os
 
@@ -26,6 +27,10 @@ settings.configure(
 
 def main():
     from django.test.utils import get_runner
+    import django
+
+    if hasattr(django, 'setup'):
+        django.setup()
 
     find_pattern = 'generic_helpers'
 
