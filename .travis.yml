@@ -22,9 +22,12 @@ install:
   - python setup.py install
 
 before_script:
-  - flake8 --exclude=migrations --ignore=W391,E501,E225 generic_helpers
+  -make flake8
 
 script:
-  - python tests.py
+  - make test
+
+after_success:
+  - make coveralls
 
 
