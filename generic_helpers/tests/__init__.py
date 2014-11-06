@@ -73,5 +73,4 @@ class TestCreate(TestBase):
 
     def test_integer_foreign_key(self):
         with self.settings(GENERIC_HELPERS_USE_TEXT_OBJECT_PK=False):
-           pass
-
+            pass
