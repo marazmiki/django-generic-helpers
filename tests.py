@@ -39,7 +39,14 @@ def main():
 
     test_runner = get_runner(settings)(verbosity=2, interactive=True)
     failed = test_runner.run_tests([find_pattern])
+
+    if not failed:
+        settings.GENERIC_HELPERS_USE_TEXT_OBJECT_PK = False
+        test_runner = get_runner(settings)(verbosity=2, interactive=True)
+        failed = test_runner.run_tests([find_pattern])
+
     sys.exit(failed)
+
 
 if __name__ == '__main__':
     main()

@@ -4,14 +4,13 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
-from django.utils import six
 
 
-VERSION = (0, 3, 1)
+VERSION = (0, 3, 2)
 
 
 def get_version():
-    return '.'.join(map(six.text_type, VERSION))
+    return '.'.join(map(str, VERSION))
 
 
 __author__ = 'Mikhail Porokhovnichenko <marazmiki@gmail.com>'

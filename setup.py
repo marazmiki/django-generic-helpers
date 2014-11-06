@@ -4,8 +4,10 @@
 from setuptools import setup, find_packages
 import os
 
+
 version = __import__('generic_helpers').get_version()
 readme = os.path.join(os.path.dirname(__file__), 'README.rst')
+
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
