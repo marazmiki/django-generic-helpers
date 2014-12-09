@@ -23,7 +23,8 @@ def generic_relation_factory(ct_field='content_type', fk_field='object_pk',
     """
     """
     ct = models.ForeignKey(ContentType,
-                           related_name=ct_related_name or CONTENT_TYPE_RELATED_NAME,
+                           related_name=(ct_related_name or
+                                         CONTENT_TYPE_RELATED_NAME),
                            verbose_name=_('content type'),
                            blank=blank, null=blank)
 

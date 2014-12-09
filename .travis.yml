@@ -5,16 +5,18 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+  - "3.4"
 
 env:
-  - DJANGO=django==1.5.10
-  - DJANGO=django==1.6.7
-  - DJANGO=django==1.7
+  - DJANGO=django==1.5.11
+  - DJANGO=django==1.6.8
+  - DJANGO=django==1.7.1
 
 matrix:
   exclude:
     - python: "2.6"
-      env: DJANGO=django==1.7
+      env: DJANGO=django==1.7.1
+
 
 install:
   - pip install -q $DJANGO
@@ -25,7 +27,7 @@ before_script:
   - make flake8
 
 script:
-  - make test
+  - make coverage
 
 after_success:
   - make coveralls
