@@ -16,7 +16,7 @@ def get_version():
     if PY3:
         text_type = str
     else:
-        text_type = unicode
+        text_type = unicode    # NOQA
     return '.'.join(map(text_type, VERSION))
 
 
