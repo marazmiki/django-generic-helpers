@@ -26,7 +26,7 @@ coverage:
 
 
 coveralls:
-	coveralls --config_file=.coveragerc
+	coveralls
 
 clean:
 	rm -rf *.egg *.egg-info
