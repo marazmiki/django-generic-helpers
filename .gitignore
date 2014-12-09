@@ -6,4 +6,4 @@ htmlcov/
 .coverage
 .hg
 .hgignore
-
+build/

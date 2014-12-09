@@ -14,6 +14,15 @@ django-generic-helpers
 .. image:: https://pypip.in/d/django-generic-helpers/badge.png
         :target: https://pypi.python.org/pypi/django-generic-helpers
 
+.. image:: https://pypip.in/wheel/django-generic-helpers/badge.svg
+    :target: https://pypi.python.org/pypi/django-generic-helpers/
+    :alt: Wheel Status
+
+.. image:: https://pypip.in/py_versions/django-generic-helpers/badge.png
+    :target: https://pypi.python.org/pypi/django-generic-helpers/
+    :alt: Supported Python versions
+
+
 This app provides some snippets (such as abstract models and managers
 with some useful methods) to simplyfy creation of another pluggable apps.
 
