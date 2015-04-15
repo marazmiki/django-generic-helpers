@@ -6,14 +6,7 @@ from __future__ import absolute_import
 from __future__ import division
 from django.db import models
 from django import get_version
-from django.contrib.contenttypes.models import ContentType
-
-
-def ct(mdl_cls):
-    """
-    Shortcut for get_for_model method of ContentType manager
-    """
-    return ContentType.objects.get_for_model(mdl_cls)
+from generic_helpers.utils import ct
 
 
 class GenericQuerySet(models.query.QuerySet):

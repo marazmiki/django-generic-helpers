@@ -6,9 +6,10 @@ from __future__ import absolute_import
 from __future__ import division
 from django.db import models
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
-from generic_helpers.managers import GenericRelationManager, ContentType
+from generic_helpers.managers import GenericRelationManager
 
 
 # Default value for `related_name` argument

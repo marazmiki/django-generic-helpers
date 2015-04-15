@@ -13,7 +13,6 @@ DOWNLOAD_URL = ('https://github.com/marazmiki/django-generic-helpers/'
 
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',

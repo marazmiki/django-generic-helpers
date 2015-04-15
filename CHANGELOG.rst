@@ -1,3 +1,8 @@
+0.3.3
+-----
+
+* Moved the **ct** shortcut into **utils** module
+
 0.3.2
 -----
 
