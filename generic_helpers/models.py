@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 from generic_helpers.managers import GenericRelationManager
+from generic_helpers.settings import USE_TEXT_OBJECT_PK
 
 
 # Default value for `related_name` argument
@@ -20,7 +21,8 @@ def generic_relation_factory(ct_field='content_type', fk_field='object_pk',
                              gr_field='content_object', manager_attr='objects',
                              ct_related_name=None,
                              class_name='GenericRelationModel',
-                             class_name_blank=None, blank=False):
+                             class_name_blank=None, blank=False,
+                             fk_field_type=None):
     """
     """
     ct = models.ForeignKey(ContentType,
@@ -29,8 +31,10 @@ def generic_relation_factory(ct_field='content_type', fk_field='object_pk',
                            verbose_name=_('content type'),
                            blank=blank, null=blank)
 
-    fk = models.CharField(_('object ID'), max_length=255, default='',
-                          blank=blank, null=blank)
+    if fk_field_type is None:
+        fk_field_type = models.CharField(_('object ID'), max_length=255,
+                                         default='', blank=blank, null=blank)
+    fk = fk_field_type
 
     gr = generic.GenericForeignKey(ct_field=ct_field, fk_field=fk_field)
 
@@ -75,6 +79,15 @@ def generic_relation_factory(ct_field='content_type', fk_field='object_pk',
                                                '__doc__': docstring
                                                })
 
-
-GenericRelationModel = generic_relation_factory()
-BlankGenericRelationModel = generic_relation_factory(blank=True)
+if USE_TEXT_OBJECT_PK:
+    GenericRelationModel = generic_relation_factory()
+    BlankGenericRelationModel = generic_relation_factory(blank=True)
+else:
+    fk_field_type = models.IntegerField(_('Object ID'), default=0)
+    GenericRelationModel = generic_relation_factory(
+        fk_field_type=fk_field_type
+    )
+    BlankGenericRelationModel = generic_relation_factory(
+        fk_field_type=fk_field_type,
+        blank=True
+    )

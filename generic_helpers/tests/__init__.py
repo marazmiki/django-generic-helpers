@@ -70,3 +70,7 @@ class TestCreate(TestBase):
     def test_custom_grm_content_object_name(self):
         Voting.objects.create(buzz=self.story_1)
         self.assertEquals(1, Voting.objects.filter(buzz=self.story_1).count())
+
+    def test_integer_foreign_key(self):
+        with self.settings(GENERIC_HELPERS_USE_TEXT_OBJECT_PK=False):
+            pass

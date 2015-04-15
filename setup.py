@@ -4,6 +4,7 @@
 from setuptools import setup, find_packages
 import os
 
+
 version = __import__('generic_helpers').get_version()
 
 

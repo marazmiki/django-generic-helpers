@@ -48,10 +48,10 @@ class GenericRelationManager(models.Manager):
             return self.get_queryset()
 
     def get_for_object(self, content_object):
-        return self.get_query_set().filter(**{
+        return self.get_queryset().filter(**{
             self.ct_field: ct(content_object),
             self.fk_field: content_object.pk
         })
 
     def get_for_model(self, model):
-        return self.get_query_set().filter(**{self.ct_field: ct(model)})
+        return self.get_queryset().filter(**{self.ct_field: ct(model)})
