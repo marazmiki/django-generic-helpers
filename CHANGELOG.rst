@@ -1,3 +1,7 @@
+0.3.4
+-----
+* Remove deprecation warning
+
 0.3.3
 -----
 
