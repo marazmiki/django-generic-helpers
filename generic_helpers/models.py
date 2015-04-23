@@ -5,13 +5,17 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 from django.db import models
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 from generic_helpers.managers import GenericRelationManager
 from generic_helpers.settings import USE_TEXT_OBJECT_PK
 
+
+try:
+    from django.contrib.contenttypes.fields import GenericForeignKey
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericForeignKey
 
 # Default value for `related_name` argument
 CONTENT_TYPE_RELATED_NAME = 'ct_set_for_%(class)s'
@@ -36,7 +40,7 @@ def generic_relation_factory(ct_field='content_type', fk_field='object_pk',
                                          default='', blank=blank, null=blank)
     fk = fk_field_type
 
-    gr = generic.GenericForeignKey(ct_field=ct_field, fk_field=fk_field)
+    gr = GenericForeignKey(ct_field=ct_field, fk_field=fk_field)
 
     class Meta(object):
         abstract = True
