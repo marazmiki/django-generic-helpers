@@ -1,3 +1,8 @@
+0.3.5
+-----
+
+* Add CHANGELOG.rst into manifest
+
 0.3.4
 -----
 * Remove deprecation warning
