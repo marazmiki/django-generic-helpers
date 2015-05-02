@@ -7,7 +7,7 @@ from __future__ import division
 import sys
 
 
-VERSION = (0, 3, 5)
+VERSION = (0, 3, 6)
 
 
 def get_version():
