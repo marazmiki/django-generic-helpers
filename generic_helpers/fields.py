@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class GenericRelationField(models.ForeignKey):
@@ -12,6 +13,7 @@ class GenericRelationField(models.ForeignKey):
             'allow_content_types': kwargs.pop('allow_content_types', None),
             'deny_content_types': kwargs.pop('deny_content_types', None),
             'manager_attr_name': kwargs.pop('manager_attr_name', 'gr'),
+            'limit_choices_to': {},
         }
 
         if not issubclass(self.gr_opts['pk_field_type'], models.Field):
@@ -37,13 +39,12 @@ class GenericRelationField(models.ForeignKey):
         super(GenericRelationField, self).__init__(**kwargs)
 
     def contribute_to_class(self, cls, name, private_only=False, **kwargs):
-        # super(GenericRelationField, self).contribute_to_class(
-        #    cls, name, private_only, **kwargs
-        # )
         models.ForeignKey(
             to='contenttypes.ContentType',
             on_delete=models.CASCADE,
-        ).contribute_to_class(cls, name, private_only, **kwargs)
+            limit_choices_to=self.get_limit_choices_to(),
+        ).contribute_to_class(cls, self.gr_opts['pk_field'],
+                              private_only, **kwargs)
         self.gr_opts['pk_field_type'](
             editable=False,
             null=True
@@ -54,11 +55,13 @@ class GenericRelationField(models.ForeignKey):
 
         cls._gr_fields.append(name)
 
-        # setattr(model_class, self.name, self.descriptor_class(
-        #     field_name=self.name,
-        #     renderer_field=self.renderer_field,
-        #     rendered_field=self.rendered_field,
-        #     renderers=self.renderers,
-        #     preprocess=self.preprocess,
-        #     postprocess=self.postprocess,
-        # ))
+        setattr(cls, name, GenericForeignKey(
+            ct_field=self.gr_opts['ct_field'],
+            fk_field=self.gr_opts['pk_field'],
+        ))
+
+    def get_limit_choices_to(self):
+        if self.gr_opts['allow_content_types']:
+            pass
+        if self.gr_opts['deny_content_types']:
+            pass

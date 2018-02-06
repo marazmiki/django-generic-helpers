@@ -55,6 +55,7 @@ class DecoratedCustomizeExample(models.Model):
     decorator with some params.
     """
 
+
 @generic_relation
 @generic_relation(gr_field='another_generic_relation')
 class DecoratedTwiceExample(models.Model):
