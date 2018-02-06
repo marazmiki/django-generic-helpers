@@ -1,0 +1,53 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "940a05a0dfa8fc702d301ff0d95d01e64022c0cab96b93cf95987771af68714b"
+        },
+        "requires": {},
+        "sources": [
+            {
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {},
+    "develop": {
+        "attrs": {
+            "version": "==17.4.0"
+        },
+        "coverage": {
+            "version": "==4.4.2"
+        },
+        "pluggy": {
+            "version": "==0.6.0"
+        },
+        "py": {
+            "version": "==1.5.2"
+        },
+        "pytest": {
+            "version": "==3.4.0"
+        },
+        "pytest-cov": {
+            "version": "==2.5.1"
+        },
+        "pytest-sugar": {
+            "version": "==0.9.0"
+        },
+        "setuptools": {
+            "version": "==38.4.0"
+        },
+        "six": {
+            "version": "==1.11.0"
+        },
+        "termcolor": {
+            "version": "==1.1.0"
+        },
+        "tox": {
+            "version": "==2.9.1"
+        },
+        "virtualenv": {
+            "version": "==15.1.0"
+        }
+    }
+}

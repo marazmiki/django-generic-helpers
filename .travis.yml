@@ -1,36 +1,21 @@
 language: python
 
 python:
-  - "2.6"
   - "2.7"
-  - "3.3"
   - "3.4"
-
-env:
-  - DJANGO=django==1.5.12
-  - DJANGO=django==1.6.11
-  - DJANGO=django==1.7.7
-  - DJANGO=django==1.8
-
-matrix:
-  exclude:
-    - python: "2.6"
-      env: DJANGO=django==1.7.7
-    - python: "2.6"
-      env: DJANGO=django==1.8
+  - "3.5"
+  - "3.6"
 
 
 install:
-  - pip install -q $DJANGO
-  - pip install -q flake8
-  - pip install -q coverage coveralls
+  - pip install -q coverage tox tox-travis
   - python setup.py install
 
 before_script:
-  - make flake8
+  - flake8 .
 
 script:
-  - make coverage
+  - tox
 
 after_success:
-  - make coveralls
+  - coveralls

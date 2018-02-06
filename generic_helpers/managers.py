@@ -1,12 +1,5 @@
-# coding: utf-8
-
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
 from django.db import models
-from django import get_version
-from generic_helpers.utils import ct
+from .utils import ct
 
 
 class GenericQuerySet(models.query.QuerySet):
@@ -42,10 +35,6 @@ class GenericRelationManager(models.Manager):
     def get_queryset(self):
         return GenericQuerySet(self.model, ct_field=self.ct_field,
                                fk_field=self.fk_field, gr_field=self.gr_field)
-
-    if get_version() < '1.7':
-        def get_query_set(self):
-            return self.get_queryset()
 
     def get_for_object(self, content_object):
         return self.get_queryset().filter(**{
