@@ -1,18 +1,26 @@
+from django.apps import apps
 from django.core.cache import cache
-from django.contrib.contenttypes.models import ContentType
+
+
+def cache_key(model_class):
+    return (
+        'ct-for-{model_class.app_label}:{model_class.__class__.__name__}'
+    ).format(model_class=model_class)
 
 
 def resolve(model_class):
-    return ContentType.objects.get_for_model(model_class)
+    return apps.get_model('contenttypes.ContentType')\
+        .objects\
+        .get_for_model(model_class)
 
 
 def ct(model_class):
     """
     Shortcut for get_for_model method of ContentType manager
     """
-    return cache.get_or_set(
-        key='ct-for-{m.app_label}:{m.__class__.__name__}'.format(m=model_class),
-        default=lambda: resolve(model_class)
-    )
+    return resolve(model_class)
+    return cache.get_or_set(key=cache_key(model_class),
+                            default=lambda: resolve(model_class)
+                            )
 
 

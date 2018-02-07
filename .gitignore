@@ -5,6 +5,7 @@
 .tox/
 dist/
 htmlcov/
+.pytest_cache
 .coverage
 .hg
 .hgignore

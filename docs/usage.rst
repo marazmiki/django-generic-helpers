@@ -24,7 +24,7 @@ And for optional fields:
     from generic_helpers.decorators import generic_relation
 
     @generic_relation('content_object', ct_field='content_type', pk_field='o_id')
-    @generic_relation('content_object', ct_field='content_type', pk_field='o_id')
+    @generic_relation('content_object', ct_field='content_type', fk_field='o_id')
     class Vote(models.Model):
         pass
 
@@ -42,8 +42,8 @@ A new way
         content_object = GenericRelationField(
             replace_manager=False,
             ct_field='content_type',
-            pk_field='object_pk',
-            pk_field_type=models.IntegerField, # or models.UUIDField,
+            fk_field='object_pk',
+            fk_field_type=models.IntegerField(), # or models.UUIDField(),
             allow_content_types=[],
             deny_content_types=[],
             manager_name='gr',
