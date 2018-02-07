@@ -1,11 +1,8 @@
-# coding: utf-8
-
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 from generic_helpers.managers import GenericRelationManager
 from generic_helpers.settings import USE_TEXT_OBJECT_PK
@@ -23,33 +20,60 @@ def generic_relation_factory(
         fk_field_type=None
 ):
     """
+    Creates a abstract model with a generic relation key.
+
+    The factory function that produces abstract base model classes
+    with the only generic relation foreign key.
+
+    Probably, it's not the most flexible approach, but it's just
+    work in many of products, so it should be left here.
 
     :param ct_field:
-    :type ct_field:
+        Name of ForeignKey field to the ``contenttypes.ContentType``
+        model.
+
+        Default value is ``content_type``.
+
+    :type ct_field: str
 
     :param fk_field:
-    :type fk_field:
+        Name of ``object_id`` field. Could be different types.
+
+        Default value is ``object_pk``
+
+    :type fk_field: str
 
     :param gr_field:
-    :type gr_field:
+    :type gr_field: str
 
     :param manager_attr:
-    :type manager_attr:
-
-    :param ct_related_name:
-    :type ct_related_name:
+    :type manager_attr: str
 
     :param class_name:
+        Name of the dynamically created abstract model class with a
+        required ``content_type`` and ``object_id`` fields.
+
+        If empty or omitted, the name will be generated automatically.
+
+        Default value is ``None``
     :type class_name:
 
     :param class_name_blank:
+        Name of the dynamically created abstract model class with an
+        optional (mean blank and nullable) content_type and object_id
+        fields.
+
+        If empty or omitted, the name will be generated automatically.
+
+        Default value is ``None``
     :type class_name_blank:
 
     :param blank:
-    :type blank:
+
+    :type blank: bool
 
     :param fk_field_type:
-    :type fk_field_type:
+    :type fk_field_type: models.Field|NoneType
 
     :return:
     """
@@ -68,23 +92,22 @@ def generic_relation_factory(
     if not six.PY3:
         class_name = six.binary_type(class_name)
 
-    docstring = """
-    %(class_name)s
+    docstring = ''.join([])
+# {class_name}
+#
+# This class is an abstract model. By inheriting from it, the child model gets two regular fields:
+#
+#   * %(ct_field)s
+#   * %(fk_field)s
+#
+# And one meta filed: %(gr_field)s
+#
+# Thus your model gets new genric relation key
 
-    This class is an abstract model. By inheriting from it, inherited
-    model gets two regular fields:
-
-      * %(ct_field)s
-      * %(fk_field)s
-
-    And one meta filed: %(gr_field)s
-
-    Thus your model gets new genric relation key
-
-    """ % {'ct_field': ct_field,
-           'fk_field': fk_field,
-           'gr_field': gr_field,
-           'class_name': class_name}
+    """.format(ct_field=ct_field,
+               fk_field=fk_field,
+               gr_field=gr_field,
+               class_name=class_name)
 
     return type(class_name, (models.Model, ), {
         gr_field: GenericRelationField(

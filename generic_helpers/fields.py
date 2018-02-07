@@ -1,12 +1,10 @@
 from copy import deepcopy
-from django.apps import apps
 from django.db import models
 from django.core import checks
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.utils import six
 from .managers import GenericQuerySet
 
 
@@ -121,7 +119,6 @@ class GenericRelationField(models.ForeignKey):
         foreign_key = self.generate_foreignkey_field()
         foreign_key.contribute_to_class(
             cls=cls,
-            # name=self.gr_opts['fk_field'],
             name=fk_field,
             private_only=private_only
         )
@@ -143,10 +140,10 @@ class GenericRelationField(models.ForeignKey):
         ).contribute_to_class(cls, name)
 
         setattr(cls, self.gr_opts['manager_attr_name'],
-                generic_relation_manager)
+                deepcopy(generic_relation_manager))
 
-        setattr(cls, 'objects', #self.gr_opts['manager_attr_name'],
-                generic_relation_manager)
+        if self.gr_opts['replace_manager']:
+            setattr(cls, 'objects', generic_relation_manager)
 
     def get_limit_choices_to(self):
         return {'id__in': [ct.id for ct in self.allowed_content_types]}
@@ -164,7 +161,7 @@ class GenericRelationField(models.ForeignKey):
             to='contenttypes.ContentType',
             on_delete=models.CASCADE,
             related_name=CONTENT_TYPE_RELATED_NAME,
-            limit_choices_to=self.get_limit_choices_to(),
+            limit_choices_to=self.get_limit_choices_to,
             null=self.gr_opts['blank'],
             blank=self.gr_opts['blank'],
         )
@@ -181,15 +178,15 @@ class GenericRelationField(models.ForeignKey):
         )):
             return self.all_content_types
 
-
-
-
         if self.gr_opts['allow_content_types']:
-
-
-        if self.gr_opts['deny_content_types']:
+            print('*** allow', self.model)
             pass
 
+        if self.gr_opts['deny_content_types']:
+            print('**** deny', self.model)
+            pass
+
+        return self.all_content_types
 
 #
 # ModelInstance
