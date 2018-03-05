@@ -11,14 +11,14 @@ django-generic-helpers
 .. image:: https://coveralls.io/repos/marazmiki/django-generic-helpers/badge.png?branch=master
   :target: https://coveralls.io/r/marazmiki/django-generic-helpers?branch=master
 
-.. image:: https://pypip.in/d/django-generic-helpers/badge.png
+.. image:: https://img.shields.io/pypi/dm/django-generic-helpers.svg
         :target: https://pypi.python.org/pypi/django-generic-helpers
 
-.. image:: https://pypip.in/wheel/django-generic-helpers/badge.svg
+.. image:: https://img.shields.io/pypi/wheel/django-generic-helpers.svg
     :target: https://pypi.python.org/pypi/django-generic-helpers/
     :alt: Wheel Status
 
-.. image:: https://pypip.in/py_versions/django-generic-helpers/badge.png
+.. image:: https://img.shields.io/pypi/pyversions/django-generic-helpers.svg
     :target: https://pypi.python.org/pypi/django-generic-helpers/
     :alt: Supported Python versions
 
