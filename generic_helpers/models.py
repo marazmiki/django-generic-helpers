@@ -1,12 +1,27 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
+from __future__ import absolute_import, unicode_literals
+
 from django.db import models
 from django.utils import six
+
 from generic_helpers.managers import GenericRelationManager
 from generic_helpers.settings import USE_TEXT_OBJECT_PK
+
 from .fields import GenericRelationField
+
+DOCSTRING = """
+{class_name}
+
+This class is an abstract model. By inheriting from it, the
+child model gets two regular fields:
+
+  * {ct_field}
+  * {fk_field}
+
+And one meta filed: {gr_field}
+
+Thus your model gets a new genric relation key
+
+"""
 
 
 def generic_relation_factory(
@@ -92,22 +107,10 @@ def generic_relation_factory(
     if not six.PY3:
         class_name = six.binary_type(class_name)
 
-    docstring = ''.join([])
-# {class_name}
-#
-# This class is an abstract model. By inheriting from it, the child model gets two regular fields:
-#
-#   * %(ct_field)s
-#   * %(fk_field)s
-#
-# And one meta filed: %(gr_field)s
-#
-# Thus your model gets new genric relation key
-
-    """.format(ct_field=ct_field,
-               fk_field=fk_field,
-               gr_field=gr_field,
-               class_name=class_name)
+    docstring = DOCSTRING.format(ct_field=ct_field,
+                                 fk_field=fk_field,
+                                 gr_field=gr_field,
+                                 class_name=class_name)
 
     return type(class_name, (models.Model, ), {
         gr_field: GenericRelationField(

@@ -9,6 +9,9 @@ pytest-cov = "*"
 pytest-sugar = "*"
 pytest-django = "*"
 flake8 = "*"
+"pytest-flake8" = "*"
+pytest-isort = "*"
+tox-pyenv = "*"
 
 [packages]
 Django = "*"

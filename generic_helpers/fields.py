@@ -1,12 +1,13 @@
 from copy import deepcopy
-from django.db import models
-from django.core import checks
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.utils.functional import cached_property
+from django.core import checks
+from django.db import models
+from django.utils import six
 from django.utils.translation import ugettext_lazy as _
-from .managers import GenericQuerySet
 
+from .managers import GenericQuerySet
 
 CONTENT_TYPE_RELATED_NAME = 'ct_set_for_%(class)s'
 
@@ -19,7 +20,8 @@ class GenericRelationField(models.ForeignKey):
             'replace_manager': kwargs.pop('replace_manager', False),
             'ct_field': kwargs.pop('ct_field', 'content_type'),
             'fk_field': kwargs.pop('fk_field', 'object_id'),
-            'fk_field_type': kwargs.pop('fk_field_type', self.foreign_key_type),
+            'fk_field_type': kwargs.pop('fk_field_type',
+                                        self.foreign_key_type),
             'allow_content_types': kwargs.pop('allow_content_types', None),
             'deny_content_types': kwargs.pop('deny_content_types', None),
             'manager_attr_name': kwargs.pop('manager_attr_name', 'gr'),
@@ -28,7 +30,7 @@ class GenericRelationField(models.ForeignKey):
         }
 
         kwargs.update(**{
-            'to': 'contenttypes.ContentType',
+            'to': ContentType,
             'on_delete': models.CASCADE,
         })
 
@@ -83,8 +85,7 @@ class GenericRelationField(models.ForeignKey):
                     id='generic_helpers.E001',
                 )
             ]
-        else:
-            return []
+        return []
 
     def contribute_to_class(self, cls, name, private_only=False, **kwargs):
         """
@@ -95,6 +96,8 @@ class GenericRelationField(models.ForeignKey):
         """
         ct_field = self.gr_opts['ct_field']
         fk_field = self.gr_opts['fk_field']
+
+        self.model_class = cls
 
         # Customize the content-type field name
         if not ct_field:
@@ -108,16 +111,15 @@ class GenericRelationField(models.ForeignKey):
             if name == 'content_object':
                 fk_field = 'object_id'
 
-        content_type = self.generate_contenttype_field()
-        content_type.contribute_to_class(
+        self.content_type = self.generate_contenttype_field()
+        self.content_type.contribute_to_class(
             cls=cls,
             name=ct_field,
             private_only=private_only,
             **kwargs
         )
-
-        foreign_key = self.generate_foreignkey_field()
-        foreign_key.contribute_to_class(
+        self.foreign_key = self.generate_foreignkey_field()
+        self.foreign_key.contribute_to_class(
             cls=cls,
             name=fk_field,
             private_only=private_only
@@ -139,14 +141,45 @@ class GenericRelationField(models.ForeignKey):
             fk_field=self.gr_opts['fk_field'],
         ).contribute_to_class(cls, name)
 
-        setattr(cls, self.gr_opts['manager_attr_name'],
-                deepcopy(generic_relation_manager))
+        generic_relation_manager.contribute_to_class(
+            self.model_class,
+            self.gr_opts['manager_attr_name']
+        )
 
         if self.gr_opts['replace_manager']:
-            setattr(cls, 'objects', generic_relation_manager)
+            generic_relation_manager.contribute_to_class(
+                self.model_class, 'objects'
+            )
+        else:
+            models.Manager().contribute_to_class(
+                self.model_class, 'objects'
+            )
 
-    def get_limit_choices_to(self):
-        return {'id__in': [ct.id for ct in self.allowed_content_types]}
+        def patch_save(model_self, *args, **kwargs):
+            if not self.gr_opts['blank']:
+                if six.PY2:
+                    content_type = getattr(model_self, self.content_type.name)
+                    self.content_type.validate(content_type.pk,  model_self)
+                else:
+                    content_type = getattr(model_self, self.content_type.name)
+                    self.content_type.validate(content_type.pk,  model_self)
+
+                foreign_key = getattr(model_self, self.foreign_key.name)
+                self.foreign_key.validate(foreign_key,  model_self)
+
+            return super(cls, model_self).save(*args, **kwargs)
+
+        if not getattr(cls.save, 'gr_patched', False):
+            docstring = cls.save.__doc__
+
+            cls.save = patch_save
+
+            if six.PY2:
+                cls.save.__func__.__doc__ = docstring
+                cls.save.__func__.gr_patched = True
+            else:
+                cls.save.__doc__ = docstring
+                cls.save.gr_patched = True
 
     def generate_foreignkey_field(self):
         field_type = deepcopy(self.gr_opts['fk_field_type'])
@@ -158,43 +191,68 @@ class GenericRelationField(models.ForeignKey):
 
     def generate_contenttype_field(self):
         return models.ForeignKey(
-            to='contenttypes.ContentType',
+            to=ContentType,
             on_delete=models.CASCADE,
             related_name=CONTENT_TYPE_RELATED_NAME,
-            limit_choices_to=self.get_limit_choices_to,
+            limit_choices_to=self.allowed_content_types,
             null=self.gr_opts['blank'],
             blank=self.gr_opts['blank'],
         )
 
-    @cached_property
-    def all_content_types(self):
-        return ContentType.objects.all()
-
-    @cached_property
     def allowed_content_types(self):
-        if not any((
-            self.gr_opts['allow_content_types'],
-            self.gr_opts['deny_content_types'],
-        )):
-            return self.all_content_types
+        # TODO: learn how to handle these types of model declaration:
+        #
+        # * ModelInstance (a class)
+        # * 'AModelInTheSameApp' (a string without app_name)
+        # * 'explicit_app.ModelClass'
+        # * 'same_app.*' -- wildcard
 
-        if self.gr_opts['allow_content_types']:
-            print('*** allow', self.model)
-            pass
+        content_types = []
+        op = self.gr_opts['allow_content_types'] and 'filter' or 'exclude'
+        gr = (self.gr_opts['allow_content_types'] or
+              self.gr_opts['deny_content_types'])
 
-        if self.gr_opts['deny_content_types']:
-            print('**** deny', self.model)
-            pass
+        if not gr:
+            return {}
+        if six.PY3:
+            att_types = (six.text_type, )
+        else:
+            att_types = (six.text_type, six.binary_type)
 
-        return self.all_content_types
+        for opt in gr:
+            if isinstance(opt, att_types):
+                if '.' not in opt:
+                    opt = '.'.join([self.model_class._meta.app_label, opt])
+                if opt.count('.') != 1:
+                    raise TypeError(
+                        'Content type should be in the ``app_label.'
+                        'ModelName`` format'
+                    )
+                app, mdl = opt.split('.')
+                content_types.append(
+                    ContentType.objects.get(app_label=app,
+                                            model__icontains=mdl
+                                            )
+                )
+            # An instance of model case: get_for_model() returns a set!
+            elif isinstance(opt, models.Model):
+                content_types.append(
+                    ContentType.objects.get_for_model(opt).get()
+                )
+            # A class of model case: get_for_model() returns an instance!
+            elif issubclass(opt, models.Model):
+                content_types.append(
+                    ContentType.objects.get_for_model(opt)
+                )
 
-#
-# ModelInstance
-# 'ModelTheSameApp'
-# 'same_app.ModelTheSameApp'
-# 'another_app.AnotherModel'
-# 'same_app.*'
-
+        # Actually, this method has some issues with performance and,
+        # probably, senseless at all. And it should be refactored.
+        return {
+            'pk__in': [
+                f.id for f in getattr(ContentType.objects, op)(
+                    pk__in=[c.id for c in content_types]
+                )]
+        } if content_types else {}
 
 
 class UUIDContentField(GenericRelationField):

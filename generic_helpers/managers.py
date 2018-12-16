@@ -1,4 +1,5 @@
 from django.db import models
+
 from .utils import ct
 
 
@@ -37,8 +38,8 @@ class GenericQuerySet(models.query.QuerySet):
     def get_for_object(self, content_object):
         gr_fields = getattr(self.model, '_gr_fields', {})
         if len(gr_fields) != 1:
-            print(gr_fields)
-            raise TypeError('This works only for models where there is the only generic relation field')
+            raise TypeError('It works only for models where there is the '
+                            'only generic relation field')
         return self.filter(**{list(gr_fields.keys())[0]: content_object})
 
     def get_for_model(self, model):
@@ -46,21 +47,7 @@ class GenericQuerySet(models.query.QuerySet):
 
 
 class GenericRelationManager(models.Manager):
-    # def __init__(self, *args, **kwargs):
-    #     self.ct_field = kwargs.pop('ct_field', 'content_type')
-    #     self.fk_field = kwargs.pop('fk_field', 'object_pk')
-    #     self.gr_field = kwargs.pop('gr_field', 'content_object')
-    #
-    #     model = kwargs.pop('model', None)
-    #
-    #     if not model:
-    #         self.model = model
-    #     super(GenericRelationManager, self).__init__(*args, **kwargs)
-
     def get_queryset(self):
-        #print('create queryset for', self.model)
-        #print(self.model, 'id', id(self.model))
-        #print('has attr', hasattr(self.model, '_gr_fields'))
         return GenericQuerySet(self.model)
 
     def get_for_object(self, content_object):

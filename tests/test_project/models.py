@@ -1,12 +1,12 @@
 import uuid
+
 from django.db import models
+
 from generic_helpers.decorators import generic_relation
 from generic_helpers.fields import GenericRelationField
-from generic_helpers.models import (
-    GenericRelationModel,
-    BlankGenericRelationModel,
-    generic_relation_factory,
-)
+from generic_helpers.models import (BlankGenericRelationModel,
+                                    GenericRelationModel,
+                                    generic_relation_factory)
 
 
 class JustModel(models.Model):
@@ -105,7 +105,8 @@ class ContentTypeWhiteList(models.Model):
     Example 11: limited content type choice. The white list strategy
     """
     content_object = GenericRelationField(
-        allow_content_types=['JustModel', 'contenttypes.ContentType']
+        allow_content_types=['JustModel',
+                             'contenttypes.ContentType']
     )
 
 

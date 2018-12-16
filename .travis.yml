@@ -1,21 +1,27 @@
 language: python
 
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-
+matrix:
+  include:
+    - { python: "2.7", env: TOXENV=py27-dj111 }
+    - { python: "3.4", env: TOXENV=py34-dj111 }
+    - { python: "3.4", env: TOXENV=py34-dj20  }
+    - { python: "3.4", env: TOXENV=py34-dj21  }
+    - { python: "3.5", env: TOXENV=py35-dj111 }
+    - { python: "3.5", env: TOXENV=py35-dj20  }
+    - { python: "3.5", env: TOXENV=py35-dj21  }
+    - { python: "3.6", env: TOXENV=py36-dj111 }
+    - { python: "3.6", env: TOXENV=py36-dj20  }
+    - { python: "3.6", env: TOXENV=py36-dj21  }
+    - { python: "3.7", dist: xenial, env: TOXENV=py37-dj111 }
+    - { python: "3.7", dist: xenial, env: TOXENV=py37-dj20  }
+    - { python: "3.7", dist: xenial, env: TOXENV=py37-dj21  }
 
 install:
-  - pip install -q coverage tox tox-travis
-  - python setup.py install
-
-before_script:
-  - flake8 .
+  - pip install -qU tox coveralls
+  - pip install -e .
 
 script:
-  - tox
+  - tox -- --cov=. --cov-branch --cov-append --flake8 --isort
 
 after_success:
   - coveralls

@@ -22,5 +22,3 @@ def ct(model_class):
     return cache.get_or_set(key=cache_key(model_class),
                             default=lambda: resolve(model_class)
                             )
-
-
