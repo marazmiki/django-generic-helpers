@@ -11,15 +11,15 @@ from .fields import GenericRelationField
 DOCSTRING = """
 {class_name}
 
-This class is an abstract model. By inheriting from it, the
-child model gets two regular fields:
+This class is an abstract model. By inheriting from it, you
+get a child model with two regular fields:
 
   * {ct_field}
   * {fk_field}
 
-And one meta filed: {gr_field}
+and one meta filed: {gr_field}
 
-Thus your model gets a new genric relation key
+Thus your model gets a new generic relation key
 
 """
 
@@ -37,56 +37,45 @@ def generic_relation_factory(
     """
     Creates a abstract model with a generic relation key.
 
-    The factory function that produces abstract base model classes
-    with the only generic relation foreign key.
+    The factory function produces abstract base model classes
+    with **the only** generic relation foreign key.
 
     Probably, it's not the most flexible approach, but it's just
     work in many of products, so it should be left here.
 
     :param ct_field:
         Name of ForeignKey field to the ``contenttypes.ContentType``
-        model.
-
-        Default value is ``content_type``.
-
+        model. Default value is ``content_type``.
     :type ct_field: str
-
     :param fk_field:
         Name of ``object_id`` field. Could be different types.
-
         Default value is ``object_pk``
-
     :type fk_field: str
-
     :param gr_field:
+        Name of ``generic foreign key`` virtual field that adds
+        some useful managers. Default is ``content_object``
     :type gr_field: str
-
     :param manager_attr:
+        Name of manager with the generic relations feature. Default
+        value is ``objects``, so by default it also changes the default
+        manager to generic one
     :type manager_attr: str
-
     :param class_name:
         Name of the dynamically created abstract model class with a
-        required ``content_type`` and ``object_id`` fields.
-
-        If empty or omitted, the name will be generated automatically.
-
+        required ``content_type`` and ``object_id`` fields. If empty or
+        omitted, the name will be generated automatically.
         Default value is ``None``
-    :type class_name:
-
+    :type class_name: str|NoneType
     :param class_name_blank:
         Name of the dynamically created abstract model class with an
         optional (mean blank and nullable) content_type and object_id
-        fields.
-
-        If empty or omitted, the name will be generated automatically.
-
-        Default value is ``None``
-    :type class_name_blank:
-
+        fields. If empty or omitted, the name will be generated
+        automatically. Default value is ``None``
+    :type class_name_blank: str|NoneType
     :param blank:
-
+        Whether a generic foreign key could be an optional field (i.e.
+        nullable and blank=True). Default value is ``False``
     :type blank: bool
-
     :param fk_field_type:
     :type fk_field_type: models.Field|NoneType
 
@@ -102,7 +91,7 @@ def generic_relation_factory(
         ]
 
     if blank:
-        class_name = class_name_blank or 'Blank%s' % class_name
+        class_name = class_name_blank or 'Blank{0}'.format(class_name)
 
     if not six.PY3:
         class_name = six.binary_type(class_name)
@@ -111,7 +100,6 @@ def generic_relation_factory(
                                  fk_field=fk_field,
                                  gr_field=gr_field,
                                  class_name=class_name)
-
     return type(class_name, (models.Model, ), {
         gr_field: GenericRelationField(
             replace_manager=True,

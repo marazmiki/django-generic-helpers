@@ -89,7 +89,9 @@ class ExamplePrimaryKeyFieldType(models.Model):
     """
     Example 9: replace a default manager on a model class
     """
-    content_object = GenericRelationField(fk_field_type=models.UUIDField())
+    content_object = GenericRelationField(
+        fk_field_type=models.UUIDField()
+    )
 
 
 class ExampleManagerName(models.Model):

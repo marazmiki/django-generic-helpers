@@ -2,11 +2,11 @@ from copy import deepcopy
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.core import checks
 from django.db import models
 from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 
+from . import checks
 from .managers import GenericQuerySet
 
 CONTENT_TYPE_RELATED_NAME = 'ct_set_for_%(class)s'
@@ -38,54 +38,9 @@ class GenericRelationField(models.ForeignKey):
 
     def check(self, **kwargs):
         errors = super(GenericRelationField, self).check(**kwargs)
-        errors.extend(self._check_limit_choices())
-        errors.extend(self._check_field_type())
+        errors.extend(checks.check_limit_choices(self))
+        errors.extend(checks.check_field_type(self))
         return errors
-
-    def _check_field_type(self):
-        if not isinstance(self.gr_opts['fk_field_type'], models.Field):
-            return [
-                checks.Error(
-                    msg=(
-                        'if you need to change a foreign key field '
-                        'type (e.g. UUID), you must provide a field '
-                        'instanced object.'
-                    ),
-                    hint=(
-                        'You should provide either "allow_content_types" '
-                        'parameter, or "deny_content_types" one. Or, if '
-                        'you don\'t need any limitation, just miss '
-                        'this parameter.'
-                    ),
-                    obj=self,
-                    id='generic_helpers.E002',
-                )
-            ]
-        else:
-            return []
-
-    def _check_limit_choices(self):
-        if all((
-            self.gr_opts['allow_content_types'],
-            self.gr_opts['deny_content_types']
-        )):
-            return [
-                checks.Error(
-                    msg=(
-                        'Wrong generic relation limits specified: you\'ve '
-                        'provided both "allow" and "deny" list.'
-                    ),
-                    hint=(
-                        'You should provide either "allow_content_types" '
-                        'parameter, or "deny_content_types" one. Or, if '
-                        'you don\'t need any limitation, just miss '
-                        'this parameter.'
-                    ),
-                    obj=self,
-                    id='generic_helpers.E001',
-                )
-            ]
-        return []
 
     def contribute_to_class(self, cls, name, private_only=False, **kwargs):
         """
@@ -157,13 +112,8 @@ class GenericRelationField(models.ForeignKey):
 
         def patch_save(model_self, *args, **kwargs):
             if not self.gr_opts['blank']:
-                if six.PY2:
-                    content_type = getattr(model_self, self.content_type.name)
-                    self.content_type.validate(content_type.pk,  model_self)
-                else:
-                    content_type = getattr(model_self, self.content_type.name)
-                    self.content_type.validate(content_type.pk,  model_self)
-
+                content_type = getattr(model_self, self.content_type.name)
+                self.content_type.validate(content_type.pk,  model_self)
                 foreign_key = getattr(model_self, self.foreign_key.name)
                 self.foreign_key.validate(foreign_key,  model_self)
 
@@ -171,9 +121,7 @@ class GenericRelationField(models.ForeignKey):
 
         if not getattr(cls.save, 'gr_patched', False):
             docstring = cls.save.__doc__
-
             cls.save = patch_save
-
             if six.PY2:
                 cls.save.__func__.__doc__ = docstring
                 cls.save.__func__.gr_patched = True
@@ -259,7 +207,10 @@ class UUIDContentField(GenericRelationField):
     """
     A generic relation field where foreign key represented as UUIDField
     """
-    foreign_key_type = models.UUIDField(_('object ID'))
+    foreign_key_type = models.UUIDField(
+        verbose_name=_('object ID'),
+        help_text=_('Should be in a UUID format'),
+    )
 
 
 class TextContentField(GenericRelationField):
