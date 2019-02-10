@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
-from generic_helpers.utils import ct
 
+from generic_helpers.utils import ct
 from test_project.models import JustModel
 
 

@@ -7,7 +7,7 @@ def generic_relation(*args, **kwargs):
     if len(args) == 1 and callable(args[0]):
         model_class = args[0]
 
-    def inner(mdl_cls):
+    def inner(model_class):
         gr_name = kwargs.pop('gr_field', 'content_object')
 
         ct_field = kwargs.pop('ct_field', None)
@@ -29,8 +29,8 @@ def generic_relation(*args, **kwargs):
         GenericRelationField(
             ct_field=ct_field,
             fk_field=fk_field,
-        ).contribute_to_class(mdl_cls, gr_name)
+        ).contribute_to_class(model_class, gr_name)
 
-        return mdl_cls
+        return model_class
 
     return inner(model_class) if model_class else inner

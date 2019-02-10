@@ -1,8 +1,11 @@
 [[source]]
+
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
+
 [dev-packages]
+
 tox = "*"
 pytest = "*"
 pytest-cov = "*"
@@ -15,4 +18,4 @@ tox-pyenv = "*"
 sphinx = "*"
 
 [packages]
-Django = "*"
+

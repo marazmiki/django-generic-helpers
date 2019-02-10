@@ -1,38 +1,33 @@
 from django.db import models
 
-from .utils import ct
-
-
-def resolve_generic_relations(model_class, filter_kwargs):
-    gr_fields = getattr(model_class, '_gr_fields', {})
-    new_filters = {}
-
-    for field in list(filter_kwargs.keys()):
-        if field not in gr_fields:
-            new_filters[field] = filter_kwargs[field]
-        else:
-            content_object = filter_kwargs[field]
-
-            ct_field = gr_fields[field]['ct_field']
-            fk_field = gr_fields[field]['fk_field']
-
-            new_filters.update(**{
-                ct_field: ct(content_object) if content_object else None,
-                fk_field: content_object.pk if content_object else None
-            })
-
-    return new_filters
+from .utils import ct, resolve_generic_relations
 
 
 class GenericQuerySet(models.query.QuerySet):
+    """
+    A QuerySet with an improved generic relations support
+    """
+
     def create(self, **kwargs):
+        """
+        Create a new object with the given kwargs, saving it to the database
+        and returning the created object.
+
+        If there are "generic foreign keys" inside the kwargs, it also will
+        be handled correctly.
+        """
         return super(GenericQuerySet, self).create(
             **resolve_generic_relations(self.model, kwargs)
         )
 
     def _filter_or_exclude(self, negate, *args, **kwargs):
+        """
+        Correctly resolves "generic foreign keys" inside the kwargs, if there.
+        """
         return super(GenericQuerySet, self)._filter_or_exclude(
-            negate, *args, **resolve_generic_relations(self.model, kwargs)
+            negate,
+            *args,
+            **resolve_generic_relations(self.model, kwargs)
         )
 
     def get_for_object(self, content_object):

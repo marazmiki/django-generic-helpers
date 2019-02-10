@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "85261baa560c336c96b3157b6b29d690066d4aecfb13e8b4b76e88a375633aaa"
+            "sha256": "13e288f13027b029dff92e08ac952878119f72a4a39dbe8144fd97b0e1332f77"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -12,22 +12,7 @@
             }
         ]
     },
-    "default": {
-        "django": {
-            "hashes": [
-                "sha256:a32c22af23634e1d11425574dce756098e015a165be02e4690179889b207c7a8",
-                "sha256:d6393918da830530a9516bbbcbf7f1214c3d733738779f06b0f649f49cc698c3"
-            ],
-            "version": "==2.1.5"
-        },
-        "pytz": {
-            "hashes": [
-                "sha256:32b0891edff07e28efe91284ed9c31e123d84bea3fd98e1f72be2508f43ef8d9",
-                "sha256:d5f05e487007e29e03409f9398d074e158d920d36eb82eaf66fb1136b0c5374c"
-            ],
-            "version": "==2018.9"
-        }
-    },
+    "default": {},
     "develop": {
         "alabaster": {
             "hashes": [
