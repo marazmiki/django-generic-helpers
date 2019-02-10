@@ -4,8 +4,8 @@ test:
 	pytest
 
 release:
-	python setup.py sdist --format=zip,bztar,gztar register upload
-	python setup.py bdist_wheel register upload
+	python setup.py sdist bdist_wheel
+	twine upload dist/* --verbose
 
 flake8:
 	flake8 .
