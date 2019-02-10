@@ -1,51 +1,49 @@
-# coding: utf-8
-
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
 from django.db import models
-from django import get_version
-from generic_helpers.utils import ct
+
+from .utils import ct, resolve_generic_relations
 
 
 class GenericQuerySet(models.query.QuerySet):
-    def __init__(self, *args, **kwargs):
-        self.ct_field = kwargs.pop('ct_field', 'content_type')
-        self.fk_field = kwargs.pop('fk_field', 'object_pk')
-        self.gr_field = kwargs.pop('gr_field', 'content_object')
-        super(GenericQuerySet, self).__init__(*args, **kwargs)
+    """
+    A QuerySet with an improved generic relations support
+    """
+
+    def create(self, **kwargs):
+        """
+        Create a new object with the given kwargs, saving it to the database
+        and returning the created object.
+
+        If there are "generic foreign keys" inside the kwargs, it also will
+        be handled correctly.
+        """
+        return super(GenericQuerySet, self).create(
+            **resolve_generic_relations(self.model, kwargs)
+        )
 
     def _filter_or_exclude(self, negate, *args, **kwargs):
-        if self.gr_field in kwargs:
-            instance = kwargs.pop(self.gr_field)
-            kwargs.update(**{self.ct_field: ct(instance),
-                             self.fk_field: instance.pk
-                             })
-        return super(GenericQuerySet, self)._filter_or_exclude(negate, *args,
-                                                               **kwargs)
+        """
+        Correctly resolves "generic foreign keys" inside the kwargs, if there.
+        """
+        return super(GenericQuerySet, self)._filter_or_exclude(
+            negate,
+            *args,
+            **resolve_generic_relations(self.model, kwargs)
+        )
 
     def get_for_object(self, content_object):
-        return self.filter(**{self.gr_field: content_object})
+        gr_fields = getattr(self.model, '_gr_fields', {})
+        if len(gr_fields) != 1:
+            raise TypeError('It works only for models where there is the '
+                            'only generic relation field')
+        return self.filter(**{list(gr_fields.keys())[0]: content_object})
 
     def get_for_model(self, model):
         return self.filter(**{self.gr_field: ct(model)})
 
 
 class GenericRelationManager(models.Manager):
-    def __init__(self, *args, **kwargs):
-        self.ct_field = kwargs.pop('ct_field', 'content_type')
-        self.fk_field = kwargs.pop('fk_field', 'object_pk')
-        self.gr_field = kwargs.pop('gr_field', 'content_object')
-        super(GenericRelationManager, self).__init__(*args, **kwargs)
-
     def get_queryset(self):
-        return GenericQuerySet(self.model, ct_field=self.ct_field,
-                               fk_field=self.fk_field, gr_field=self.gr_field)
-
-    if get_version() < '1.7':
-        def get_query_set(self):
-            return self.get_queryset()
+        return GenericQuerySet(self.model)
 
     def get_for_object(self, content_object):
         return self.get_queryset().filter(**{

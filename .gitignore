@@ -1,8 +1,11 @@
 *.pyc
 *.egg/
 *.egg-info/
+.idea/
+.tox/
 dist/
 htmlcov/
+.pytest_cache
 .coverage
 .hg
 .hgignore

@@ -1,0 +1,87 @@
+import pytest
+from django.apps import apps
+from django.core.exceptions import ValidationError
+
+from test_project.models import (ContentTypeBlackList, ContentTypeWhiteList,
+                                 ExampleField, ExampleManagerName,
+                                 ExamplePrimaryKeyFieldType,
+                                 ExampleReplaceManager)
+
+
+def ex(model_class, content_object, field_name='content_object'):
+    instance = model_class.objects.create(**{field_name: content_object})
+    instance = model_class.objects.get(pk=instance.pk)
+    return instance
+
+
+def test_7(just_model):
+    example = ex(ExampleField, content_object=just_model)
+    assert example.content_object == just_model
+
+
+def test_8(just_model):
+    model = ex(ExampleReplaceManager, content_object=just_model)
+    assert model in ExampleReplaceManager.objects.get_for_object(just_model)
+
+
+def test_9a(just_uuid_model):
+    model = ex(ExamplePrimaryKeyFieldType, content_object=just_uuid_model)
+    assert model.content_object == just_uuid_model
+
+
+def test_9b(just_model):
+    with pytest.raises(ValidationError):
+        ex(ExamplePrimaryKeyFieldType, content_object=just_model)
+
+
+def test_10(just_model):
+    model = ex(ExampleManagerName, just_model)
+    assert model in ExampleManagerName.gr_mgr.get_for_object(just_model)
+
+
+@pytest.mark.parametrize(
+    argnames='model_name, error_expected',
+    argvalues=[
+        ('test_project.JustModel', False),
+        ('test_project.JustAnotherModel', True),
+    ],
+    ids=[
+        'a model of allowed type should be added',
+        'a model of disallowed class should cause an exception',
+    ])
+def test_11a(model_name, error_expected):
+    model_class = apps.get_model(model_name)
+
+    content_object = model_class(name=model_name)
+    content_object.save()
+
+    if error_expected:
+        with pytest.raises(ValidationError):
+            ex(ContentTypeWhiteList, content_object)
+    else:
+        model = ex(ContentTypeWhiteList, content_object)
+        assert model.content_object == content_object
+
+
+@pytest.mark.parametrize(
+    argnames='model_name, error_expected',
+    argvalues=[
+        ('test_project.JustModel', True),
+        ('test_project.JustAnotherModel', False),
+    ],
+    ids=[
+        'a model of disallowed class should cause an exception',
+        'a model of non-disallowed class should be added',
+    ])
+def test_12(model_name, error_expected):
+    model_class = apps.get_model(model_name)
+
+    content_object = model_class(name=model_name)
+    content_object.save()
+
+    if error_expected:
+        with pytest.raises(ValidationError):
+            ex(ContentTypeBlackList, content_object)
+    else:
+        model = ex(ContentTypeBlackList, content_object)
+        assert model.content_object == content_object

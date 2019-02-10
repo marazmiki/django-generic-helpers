@@ -1,36 +1,26 @@
 language: python
 
-python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
-
-env:
-  - DJANGO=django==1.5.12
-  - DJANGO=django==1.6.11
-  - DJANGO=django==1.7.8
-  - DJANGO=django==1.8.2
-
 matrix:
-  exclude:
-    - python: "2.6"
-      env: DJANGO=django==1.7.8
-    - python: "2.6"
-      env: DJANGO=django==1.8.2
-
+  include:
+    - { python: "2.7", env: TOXENV=py27-dj111 }
+    - { python: "3.4", env: TOXENV=py34-dj111 }
+    - { python: "3.4", env: TOXENV=py34-dj20  }
+    - { python: "3.5", env: TOXENV=py35-dj111 }
+    - { python: "3.5", env: TOXENV=py35-dj20  }
+    - { python: "3.5", env: TOXENV=py35-dj21  }
+    - { python: "3.6", env: TOXENV=py36-dj111 }
+    - { python: "3.6", env: TOXENV=py36-dj20  }
+    - { python: "3.6", env: TOXENV=py36-dj21  }
+    - { python: "3.7", dist: xenial, env: TOXENV=py37-dj111 }
+    - { python: "3.7", dist: xenial, env: TOXENV=py37-dj20  }
+    - { python: "3.7", dist: xenial, env: TOXENV=py37-dj21  }
 
 install:
-  - pip install -q $DJANGO
-  - pip install -q flake8
-  - pip install -q coverage coveralls
-  - python setup.py install
-
-before_script:
-  - make flake8
+  - pip install -qU tox coveralls
+  - pip install -e .
 
 script:
-  - make coverage
+  - tox -- --cov=. --cov-branch --cov-append --flake8 --isort
 
 after_success:
-  - make coveralls
+  - coveralls
