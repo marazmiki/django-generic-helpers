@@ -1,5 +1,13 @@
+Usage
+#####
+
+
+
 An old way
 ==========
+
+The old way we've added generic fields to an orbitrary model was an
+inheritance from the base abstract ``GenericRelationModel`` model.
 
 .. code:: python
 
@@ -9,17 +17,22 @@ An old way
     class Vote(GenericRelationModel):
         pass
 
-
-And for optional fields:
+or from ``BlankGenericRelationModel`` to get an optional field:
 
 
 .. code:: python
-
 
     from generic_helpers.models import BlankGenericRelationModel
 
     class Vote(BlankGenericRelationModel):
         pass
+
+
+Well, it wasn't quite usable, because a model could have the only generic
+relation field with a fixed name.
+
+
+.. code:: python
 
     from generic_helpers.decorators import generic_relation
 
@@ -29,25 +42,43 @@ And for optional fields:
         pass
 
 
-
-
-
 A new way
 =========
+
+With a new one, we just declare a generic relation field like as usual model one.
+
+.. code:: python
 
     from django.db import models
     from generic_helpers.fields import GenericRelationField
 
     class Vote(models.Model)
         content_object = GenericRelationField(
-            replace_manager=False,
-            ct_field='content_type',
-            fk_field='object_pk',
-            fk_field_type=models.IntegerField(), # or models.UUIDField(),
-            allow_content_types=[],
-            deny_content_types=[],
-            manager_name='gr',
+            replace_manager=False,                  # 1
+            manager_name='gr',                      # 2
+            ct_field='content_type',                # 3
+            fk_field='object_pk',                   # 4
+            fk_field_type=models.IntegerField(),    # 5
+            allowed_content_types=[],                 # 6
+            denied_content_types=[],                  # 7
+
+            # ...and other keyword arguments that
+            # the ForeignKey field accepts
         )
+
+With this, you can create an arbitrary number of generic relation fields with
+different options and customized managers.
+
+
+.. code:: python
+
+    Vote.objects.filter(content_object=my_post)
+
+2)
+
+
+
+
 
 
 Managers and querysets

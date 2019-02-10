@@ -105,8 +105,8 @@ class ContentTypeWhiteList(models.Model):
     Example 11: limited content type choice. The white list strategy
     """
     content_object = GenericRelationField(
-        allow_content_types=['JustModel',
-                             'contenttypes.ContentType']
+        allowed_content_types=['JustModel',
+                               'contenttypes.ContentType']
     )
 
 
@@ -115,5 +115,5 @@ class ContentTypeBlackList(models.Model):
     Example 12: limited content type choice. The black list strategy
     """
     content_object = GenericRelationField(
-        deny_content_types=[JustModel]
+        denied_content_types=[JustModel]
     )

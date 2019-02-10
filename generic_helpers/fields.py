@@ -22,8 +22,8 @@ class GenericRelationField(models.ForeignKey):
             'fk_field': kwargs.pop('fk_field', 'object_id'),
             'fk_field_type': kwargs.pop('fk_field_type',
                                         self.foreign_key_type),
-            'allow_content_types': kwargs.pop('allow_content_types', None),
-            'deny_content_types': kwargs.pop('deny_content_types', None),
+            'allowed_content_types': kwargs.pop('allowed_content_types', None),
+            'denied_content_types': kwargs.pop('denied_content_types', None),
             'manager_attr_name': kwargs.pop('manager_attr_name', 'gr'),
             'limit_choices_to': {},
             'blank': kwargs.pop('blank', False),
@@ -52,8 +52,8 @@ class GenericRelationField(models.ForeignKey):
                         'instanced object.'
                     ),
                     hint=(
-                        'You should provide either "allow_content_types" '
-                        'parameter, or "deny_content_types" one. Or, if '
+                        'You should provide either "allowed_content_types" '
+                        'parameter, or "denied_content_types" one. Or, if '
                         'you don\'t need any limitation, just miss '
                         'this parameter.'
                     ),
@@ -66,8 +66,8 @@ class GenericRelationField(models.ForeignKey):
 
     def _check_limit_choices(self):
         if all((
-            self.gr_opts['allow_content_types'],
-            self.gr_opts['deny_content_types']
+            self.gr_opts['allowed_content_types'],
+            self.gr_opts['denied_content_types']
         )):
             return [
                 checks.Error(
@@ -76,8 +76,8 @@ class GenericRelationField(models.ForeignKey):
                         'provided both "allow" and "deny" list.'
                     ),
                     hint=(
-                        'You should provide either "allow_content_types" '
-                        'parameter, or "deny_content_types" one. Or, if '
+                        'You should provide either "allowed_content_types" '
+                        'parameter, or "denied_content_types" one. Or, if '
                         'you don\'t need any limitation, just miss '
                         'this parameter.'
                     ),
@@ -208,9 +208,9 @@ class GenericRelationField(models.ForeignKey):
         # * 'same_app.*' -- wildcard
 
         content_types = []
-        op = self.gr_opts['allow_content_types'] and 'filter' or 'exclude'
-        gr = (self.gr_opts['allow_content_types'] or
-              self.gr_opts['deny_content_types'])
+        op = self.gr_opts['allowed_content_types'] and 'filter' or 'exclude'
+        gr = (self.gr_opts['allowed_content_types'] or
+              self.gr_opts['denied_content_types'])
 
         if not gr:
             return {}

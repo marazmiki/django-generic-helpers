@@ -53,9 +53,6 @@ todo_include_todos = False
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 
-# The name for this set of Sphinx documents.
-# "<project> v<release> documentation" by default.
-#html_title = u'django-ulogin v0.3.0'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -137,7 +134,7 @@ html_show_copyright = False
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'django-ulogindoc'
+htmlhelp_basename = 'django-generic-helpers'
 
 # -- Options for LaTeX output ---------------------------------------------
 

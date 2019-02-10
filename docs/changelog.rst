@@ -1,9 +1,15 @@
-* Added support for Python 3.6 and dropped 3.3x and 3.2x support;
-* Added Django 2.0 support and dropped Django 1.6 and older;
-* ``ct`` caches results;
-* Decorator
-* GenericForeignKey can be added in the field without nesting;
-* PartialGenericForeignKey?
+1.0.0
+-----
+
+* A new declarative way to add generic relation fields to your model: any number or generic relation, any field name(s);
+* Ability to add a generic relation for a restricted set of models. You can either enumerate all allowed models or all denied ones;
+* An alternative way to add these fields: with a decorator (actually, it's not a new feature, just saved from unpublished release);
+* The ``ct`` helper now caches own results;
+* Added support for Python 3.6;
+* Added support for Python 3.7;
+* Added Django 2.0 and 2.1 support;
+* Removed support for Python 3.3 and older;
+* Removed support for Django 1.10 and older
 
 
 0.3.7
@@ -20,7 +26,6 @@
 -----
 
 * Add CHANGELOG.rst into manifest
-
 
 
 0.3.4
@@ -43,5 +48,3 @@
 * Coverage support;
 * Updated Django head version;
 * Fix 0.3.1 install bug (import six from django).
-
-

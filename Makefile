@@ -1,7 +1,7 @@
 project_name=generic_helpers
 
 test:
-	PYTHONPATH=.:tests pytest
+	pytest
 
 release:
 	python setup.py sdist --format=zip,bztar,gztar register upload
