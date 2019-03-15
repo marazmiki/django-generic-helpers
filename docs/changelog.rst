@@ -1,3 +1,8 @@
+1.0.1
+-----
+
+* A bugfix: don't change a customized manager with default django's one
+
 1.0.0
 -----
 

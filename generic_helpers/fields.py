@@ -106,7 +106,7 @@ class GenericRelationField(models.ForeignKey):
                 self.model_class, 'objects'
             )
         else:
-            models.Manager().contribute_to_class(
+            self.model_class._default_manager.contribute_to_class(
                 self.model_class, 'objects'
             )
 

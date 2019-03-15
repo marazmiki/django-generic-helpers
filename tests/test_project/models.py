@@ -119,3 +119,16 @@ class ContentTypeBlackList(models.Model):
     content_object = GenericRelationField(
         denied_content_types=[JustModel]
     )
+
+
+class CustomQuerySet(models.QuerySet):
+    def everything(self):
+        return self.all()
+
+
+class RespectCustomizedManager(models.Model):
+    """
+    Example 13: a model has a customized manager/queryset
+    """
+    content_object = GenericRelationField()
+    objects = CustomQuerySet.as_manager()

@@ -1,5 +1,6 @@
 from test_project.models import (GRBlankInheritanceExample, GRFactoryExample,
-                                 GRInheritanceExample)
+                                 GRInheritanceExample,
+                                 RespectCustomizedManager)
 
 
 def ex(model_class, content_object, field_name='content_object'):
@@ -24,3 +25,9 @@ def test_3(just_model):
                  field_name='customized_content_object')
 
     assert example.customized_content_object == just_model
+
+
+def test_respect(just_model):
+    for i in range(5):
+        RespectCustomizedManager.objects.create(content_object=just_model)
+    assert RespectCustomizedManager.objects.everything().count() == 5
