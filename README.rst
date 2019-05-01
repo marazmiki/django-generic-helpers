@@ -2,86 +2,128 @@
 django-generic-helpers
 ======================
 
-.. image:: https://badge.fury.io/py/django-generic-helpers.png
-    :target: http://badge.fury.io/py/django-generic-helpers
-    
-.. image:: https://travis-ci.org/marazmiki/django-generic-helpers.png?branch=master
-        :target: https://travis-ci.org/marazmiki/django-generic-helpers
+.. image:: https://badge.fury.io/py/django-generic-helpers.svg
+   :target: http://badge.fury.io/py/django-generic-helpers
 
-.. image:: https://coveralls.io/repos/marazmiki/django-generic-helpers/badge.png?branch=master
-  :target: https://coveralls.io/r/marazmiki/django-generic-helpers?branch=master
+.. image:: https://travis-ci.org/marazmiki/django-generic-helpers.svg?branch=master
+   :target: https://travis-ci.org/marazmiki/django-generic-helpers
+
+.. image:: https://coveralls.io/repos/marazmiki/django-generic-helpers/badge.svg?branch=master
+   :target: https://coveralls.io/r/marazmiki/django-generic-helpers?branch=master
 
 .. image:: https://pypip.in/d/django-generic-helpers/badge.png
-        :target: https://pypi.python.org/pypi/django-generic-helpers
+   :target: https://pypi.python.org/pypi/django-generic-helpers
 
 .. image:: https://pypip.in/wheel/django-generic-helpers/badge.svg
-    :target: https://pypi.python.org/pypi/django-generic-helpers/
-    :alt: Wheel Status
+   :target: https://pypi.python.org/pypi/django-generic-helpers/
+   :alt: Wheel Status
 
-.. image:: https://pypip.in/py_versions/django-generic-helpers/badge.png
-    :target: https://pypi.python.org/pypi/django-generic-helpers/
-    :alt: Supported Python versions
+.. image:: https://img.shields.io/pypi/pyversions/django-generic-helpers.svg
+   :target: https://pypi.python.org/pypi/django-generic-helpers/
+   :alt: Supported Python versions
+
+.. image:: https://img.shields.io/pypi/djversions/django-generic-helpers.svg
+   :target: https://pypi.python.org/pypi/django-generic-helpers/
+   :alt: Supported Django versions
 
 
-This app provides some snippets (such as abstract models and managers
-with some useful methods) to simplyfy creation of another pluggable apps.
+The application provides some syntax sugar for working with Django's `generic relations <https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations>`_
 
-The license is MIT.
 
 
 Installation
 ============
 
+Just install the package from PyPI within ``pip``
+
 .. code:: bash
 
     pip install django-generic-helpers
 
-After you can add the `generic_helpers` app into your `INSTALLED_APPS`. If you aren't
-want to run test, you can skip this step.
+...or `pipenv <https://docs.pipenv.org/en/latest/>`_
+
+.. code:: bash
+
+    pipenv install django-generic-helpers
+
+...or even `poetry <https://poetry.eustace.io/>`_
+
+.. code:: bash
+
+    poetry add django-generic-helpers
+
+That's all. No need to add this into ``INSTALLED_APPS`` of your project or something like that.
+
 
 Usage
 =====
 
-To use this app, just import GenericRelationModel class from
-generic_helpers.models package and inherit your model from it:
+That's how did you work with generic relations before:
 
 .. code:: python
 
+    # models.py
+    from django.contrib.contenttypes.fields import GenericForeignKey
+    from django.contrib.contenttypes.models import ContentType
     from django.db import models
-    from generic_helpers.models import GenericRelationModel
 
-    class MyModel(GenericRelationModel):
-        title = models.CharField(max_length=255)
+    class Post(models.Model):
+        pass
 
-Now MyModel class has content_object attribute and you can create MyModel
-instances using generic relation:
+    class Image(models.Model):
+         content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+         object_id = models.IntegerField()
+         content_object = GenericForeignKey(ct_field='content_type', fk_field='object_id')
 
-.. code:: python
+    # Example of filtering
+    post = Post.objects.get(pk=1)
+    images = Image.objects.filter(
+        content_type=ContentType.objects.get_for_object(post),
+        object_id=post.id
+    )
 
-    >>> from django.contrib.auth.models import User
-    >>> user = User.objects.get(pk=1)
-    >>>
-    >>> my_model = MyModel.objects.create(title='title',
-    ...                                   content_object=user)
-    >>>
-
-In this example how you can see we have used User.
-
-Also your model manager has a get_for_object method for quick filtering by
-content_object complex field:
+Looks verbose a bit, yep? Let's rewrite this with ``django-generic-helpers``
 
 .. code:: python
 
+    # models.py
+    from django.db import models
+    from generic_helpers.fields import GenericRelationField
 
-    >>> from django.contrib.auth.models import User
-    >>> user = User.objects.get(pk=1)
-    >>>
-    >>> models_for_user = MyModel.objects.get_for_object(user)
-    >>>
+    class Post(models.Model):
+        pass
+
+    class Image(models.Model):
+         content_object = GenericRelationField()
+
+    # Example of filtering
+    post = Post.objects.get(pk=1)
+    images = Image.objects.filter(content_object=post)
+
+Personally, I found it much simpler and cleaner.
+
+Features the application provides:
+
+* Creating an arbitrary number of generic relation fields, both required and optional;
+* Providing custom names for ``content_type`` and ``object_id`` columns
+* You can define a whitelist (or a black one) of models that could (not) be written into the field
+
+Please, follow up the documentation for details.
 
 Contributing
 ============
 
-If you've found a bug, implemented a feature and think it is useful, or you've
-own pluggable app and want to use django-generic-helpers in it, then please
-consider contributing. Patches, pull requests or just suggestions are welcome!
+* If you found a bug, feel free to drop me `an issue on the repo <https://github.com/marazmiki/django-generic-helpers/issues/new>`_;
+* Implemented a new feature could be useful? `Create a PR <https://github.com/marazmiki/django-generic-helpers/compare>`_!
+
+A few words if you plan to send a PR:
+
+* Please, write tests!
+* Follow `PEP-0008 <https://www.python.org/dev/peps/pep-0008/>`_ codestyle recommendations.
+* When pushing, please wait while `Travis CI <https://travis-ci.org/marazmiki/django-generic-helpers>`_ will finish his useful work and complete the build. And if the build fails, please fix the issues before PR
+* And of course, don't forget to add yourself into the `authors list <https://github.com/marazmiki/django-generic-helpers/blob/master/docs/authors.rst>`_ ;)
+
+License
+=======
+
+The license is MIT.

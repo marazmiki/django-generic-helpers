@@ -1,15 +1,22 @@
 project_name=generic_helpers
 
+.PHONY: test
 test:
 	pytest
 
+.PHONY: check
+check:
+	./setup.py sdist bdist_wheel
+	twine check dist/*
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+.PHONY: release
 release:
-	python setup.py sdist --format=zip,bztar,gztar register upload
-	python setup.py bdist_wheel register upload
+	make check
+	twine upload dist/*
 
-flake8:
-	flake8 .
 
+.PHONY: clean
 clean:
 	rm -rf *.egg *.egg-info
 	rm -rf htmlcov

@@ -3,6 +3,8 @@
 
 * A bugfix: prevented ``makemigrations`` from generating infinite migrations because of ``allowed_content_types`` everytime is a new object
 * Added ``Django==2.2`` support
+* Updated ``README`` a bit: replaced an old text to the actual one; made badges SVG.
+*
 
 1.0.1
 -----
