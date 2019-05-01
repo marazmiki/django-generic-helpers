@@ -1,3 +1,9 @@
+1.0.2
+-----
+
+* A bugfix: prevented ``makemigrations`` from generating infinite migrations because of ``allowed_content_types`` everytime is a new object
+* Added ``Django==2.2`` support
+
 1.0.1
 -----
 

@@ -4,12 +4,26 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import six
+from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 
 from . import checks
 from .managers import GenericQuerySet
 
 CONTENT_TYPE_RELATED_NAME = 'ct_set_for_%(class)s'
+
+
+@deconstructible
+class AllowedContentTypes(object):
+    def __init__(self, field):
+        self.field = field
+
+    def __eq__(self, other):
+        return self.field.allowed_content_types() == \
+               other.allowed_content_types()
+
+    def __call__(self):
+        return self.field.allowed_content_types()
 
 
 class GenericRelationField(models.ForeignKey):
@@ -142,7 +156,7 @@ class GenericRelationField(models.ForeignKey):
             to=ContentType,
             on_delete=models.CASCADE,
             related_name=CONTENT_TYPE_RELATED_NAME,
-            limit_choices_to=self.allowed_content_types,
+            limit_choices_to=AllowedContentTypes(self),
             null=self.gr_opts['blank'],
             blank=self.gr_opts['blank'],
         )
