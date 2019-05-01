@@ -8,7 +8,7 @@ matrix:
     - { python: "3.5", env: TOXENV=py35-dj111 }
     - { python: "3.5", env: TOXENV=py35-dj20  }
     - { python: "3.5", env: TOXENV=py35-dj21  }
-    - { python: "3.5", env: TOXENV=py35-dj22  }
+    - { python: "3.5", dist: xenial, env: TOXENV=py35-dj22  }
     - { python: "3.6", dist: xenial, env: TOXENV=py36-dj111 }
     - { python: "3.6", dist: xenial, env: TOXENV=py36-dj20  }
     - { python: "3.6", dist: xenial, env: TOXENV=py36-dj21  }
