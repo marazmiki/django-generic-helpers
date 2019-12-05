@@ -3,11 +3,11 @@ from copy import deepcopy
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils import six
 from django.utils.deconstruct import deconstructible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from . import checks
+from .compat import PY2, PY3
 from .managers import GenericQuerySet
 
 CONTENT_TYPE_RELATED_NAME = 'ct_set_for_%(class)s'
@@ -136,7 +136,7 @@ class GenericRelationField(models.ForeignKey):
         if not getattr(cls.save, 'gr_patched', False):
             docstring = cls.save.__doc__
             cls.save = patch_save
-            if six.PY2:
+            if PY2:
                 cls.save.__func__.__doc__ = docstring
                 cls.save.__func__.gr_patched = True
             else:
@@ -176,10 +176,10 @@ class GenericRelationField(models.ForeignKey):
 
         if not gr:
             return {}
-        if six.PY3:
-            att_types = (six.text_type, )
+        if PY3:
+            att_types = (str, )
         else:
-            att_types = (six.text_type, six.binary_type)
+            att_types = (str, bytes)
 
         for opt in gr:
             if isinstance(opt, att_types):

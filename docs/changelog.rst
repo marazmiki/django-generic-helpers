@@ -1,3 +1,8 @@
+1.0.3
+-----
+
+* Added ``Python 3.8`` and ``Django 3.0`` support
+
 1.0.2
 -----
 
