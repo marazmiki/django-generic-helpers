@@ -1,3 +1,9 @@
+1.0.4
+-----
+
+* Fixed a bug with ``allowed_content_types`` when referencing to a model whose name is the beginning of another one (reported by @busy)
+* Added ``bump2version``
+
 1.0.3
 -----
 

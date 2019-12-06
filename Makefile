@@ -1,9 +1,5 @@
 project_name=generic_helpers
 
-.PHONY: test
-test:
-	pytest
-
 .PHONY: check
 check:
 	./setup.py sdist bdist_wheel
@@ -22,3 +18,20 @@ clean:
 	rm -rf htmlcov
 	rm -f .coverage
 	find . -name "*.pyc" -exec rm -rf {} \;
+
+.PHONY: patch
+patch:
+	echo "Making a patch release"
+	pipenv run bump2version patch
+
+.PHONY: minor
+minor:
+	echo "Making a minor release"
+	pipenv run bump2version minor
+
+
+.PHONY: push
+push:
+	git push origin master --tags
+
+

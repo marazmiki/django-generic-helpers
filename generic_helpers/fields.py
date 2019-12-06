@@ -193,7 +193,7 @@ class GenericRelationField(models.ForeignKey):
                 app, mdl = opt.split('.')
                 content_types.append(
                     ContentType.objects.get(app_label=app,
-                                            model__icontains=mdl
+                                            model__iexact=mdl
                                             )
                 )
             # An instance of model case: get_for_model() returns a set!

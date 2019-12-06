@@ -1,11 +1,8 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
-
 [dev-packages]
-
 tox = "*"
 pytest = "*"
 pytest-cov = "*"
@@ -16,6 +13,7 @@ flake8 = "*"
 pytest-isort = "*"
 tox-pyenv = "*"
 sphinx = "*"
+bump2version = "*"
+twine = "*"
 
 [packages]
-

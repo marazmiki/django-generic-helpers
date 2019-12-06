@@ -3,10 +3,11 @@ from django import VERSION
 from django.apps import apps
 from django.core.exceptions import ValidationError
 
+from generic_helpers.fields import GenericRelationField
 from test_project.models import (ContentTypeBlackList, ContentTypeWhiteList,
                                  ExampleField, ExampleManagerName,
                                  ExamplePrimaryKeyFieldType,
-                                 ExampleReplaceManager)
+                                 ExampleReplaceManager, JustModel)
 
 
 def ex(model_class, content_object, field_name='content_object'):
@@ -90,3 +91,17 @@ def test_12(model_name, error_expected):
     else:
         model = ex(ContentTypeBlackList, content_object)
         assert model.content_object == content_object
+
+
+def test_14():
+    """
+    It's a regression test for an issue discovered by @busy when
+    allowed_content_type() failed when there are some models
+    started with the same substring (e.g. Example and ExampleTwo)
+    """
+    field = GenericRelationField(allowed_content_types=['Example'])
+    field.model_class = JustModel
+    assert isinstance(
+        field.allowed_content_types(),
+        dict
+    )

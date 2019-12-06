@@ -132,3 +132,11 @@ class RespectCustomizedManager(models.Model):
     """
     content_object = GenericRelationField()
     objects = CustomQuerySet.as_manager()
+
+
+class Example(models.Model):
+    pass
+
+
+class ExampleTwo(models.Model):
+    pass
