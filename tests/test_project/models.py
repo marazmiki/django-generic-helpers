@@ -140,3 +140,10 @@ class Example(models.Model):
 
 class ExampleTwo(models.Model):
     pass
+
+
+class VolodyRegression(models.Model):
+    content_object = GenericRelationField()
+
+    def save(*args, **kwargs):
+        raise ZeroDivisionError("It's a weird way to save data")

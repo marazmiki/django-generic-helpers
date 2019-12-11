@@ -124,14 +124,15 @@ class GenericRelationField(models.ForeignKey):
                 self.model_class, 'objects'
             )
 
+        original_save = cls.save
+
         def patch_save(model_self, *args, **kwargs):
             if not self.gr_opts['blank']:
                 content_type = getattr(model_self, self.content_type.name)
                 self.content_type.validate(content_type.pk,  model_self)
                 foreign_key = getattr(model_self, self.foreign_key.name)
                 self.foreign_key.validate(foreign_key,  model_self)
-
-            return super(cls, model_self).save(*args, **kwargs)
+            return original_save(model_self, *args, **kwargs)
 
         if not getattr(cls.save, 'gr_patched', False):
             docstring = cls.save.__doc__

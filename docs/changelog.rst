@@ -1,3 +1,9 @@
+1.0.5
+-----
+
+* Fixed a bug with customized ``save()`` method on a model class. Thank @volody2006 for reporting
+* Moved all the regression tests into a separated file
+
 1.0.4
 -----
 
