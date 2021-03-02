@@ -2,12 +2,12 @@ import pytest
 from django import VERSION
 from django.apps import apps
 from django.core.exceptions import ValidationError
-
-from generic_helpers.fields import GenericRelationField
 from test_project.models import (ContentTypeBlackList, ContentTypeWhiteList,
                                  ExampleField, ExampleManagerName,
                                  ExamplePrimaryKeyFieldType,
                                  ExampleReplaceManager, JustModel)
+
+from generic_helpers.fields import GenericRelationField
 
 
 def ex(model_class, content_object, field_name='content_object'):

@@ -1,5 +1,4 @@
 import pytest
-
 from test_project import models as m  # noqa
 
 

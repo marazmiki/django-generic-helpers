@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
+from test_project.models import JustModel
 
 from generic_helpers.utils import ct
-from test_project.models import JustModel
 
 
 def test_ct_works_for_model_class():

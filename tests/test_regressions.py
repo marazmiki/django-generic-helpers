@@ -1,7 +1,7 @@
 import pytest
+from test_project.models import JustModel, VolodyRegression
 
 from generic_helpers.fields import GenericRelationField
-from test_project.models import JustModel, VolodyRegression
 
 
 def test_model_name_startswith__aka_busy_regression():
