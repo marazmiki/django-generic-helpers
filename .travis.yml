@@ -28,6 +28,9 @@ matrix:
     - { python: "3.8", dist: xenial, env: TOXENV=py38-dj22  }
     - { python: "3.8", dist: xenial, env: TOXENV=py38-dj30  }
 
+    - { python: "3.9", dist: xenial, env: TOXENV=py39-dj22  }
+    - { python: "3.9", dist: xenial, env: TOXENV=py39-dj31  }
+
 install:
   - pip install -qU tox coveralls
   - pip install -e .
