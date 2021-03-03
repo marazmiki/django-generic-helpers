@@ -7,7 +7,6 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
 from . import checks
-from .compat import PY2, PY3
 from .managers import GenericQuerySet
 
 CONTENT_TYPE_RELATED_NAME = 'ct_set_for_%(class)s'
@@ -137,12 +136,8 @@ class GenericRelationField(models.ForeignKey):
         if not getattr(cls.save, 'gr_patched', False):
             docstring = cls.save.__doc__
             cls.save = patch_save
-            if PY2:
-                cls.save.__func__.__doc__ = docstring
-                cls.save.__func__.gr_patched = True
-            else:
-                cls.save.__doc__ = docstring
-                cls.save.gr_patched = True
+            cls.save.__doc__ = docstring
+            cls.save.gr_patched = True
 
     def generate_foreignkey_field(self):
         field_type = deepcopy(self.gr_opts['fk_field_type'])
@@ -177,13 +172,9 @@ class GenericRelationField(models.ForeignKey):
 
         if not gr:
             return {}
-        if PY3:
-            att_types = (str, )
-        else:
-            att_types = (str, bytes)
 
         for opt in gr:
-            if isinstance(opt, att_types):
+            if isinstance(opt, (str, )):
                 if '.' not in opt:
                     opt = '.'.join([self.model_class._meta.app_label, opt])
                 if opt.count('.') != 1:

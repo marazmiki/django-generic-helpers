@@ -5,7 +5,6 @@ from django.db import models
 from generic_helpers.managers import GenericRelationManager
 from generic_helpers.settings import USE_TEXT_OBJECT_PK
 
-from .compat import PY3
 from .fields import GenericRelationField
 
 DOCSTRING = """
@@ -92,9 +91,6 @@ def generic_relation_factory(
 
     if blank:
         class_name = class_name_blank or 'Blank{0}'.format(class_name)
-
-    if not PY3:
-        class_name = bytes(class_name)
 
     docstring = DOCSTRING.format(ct_field=ct_field,
                                  fk_field=fk_field,
