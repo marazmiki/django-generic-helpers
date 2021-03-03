@@ -23,7 +23,7 @@ install:
   - pip install -e .
 
 script:
-  - tox -- --cov=. --cov-branch --cov-append --flake8 --isort
+  - tox
 
 after_success:
   - coveralls
