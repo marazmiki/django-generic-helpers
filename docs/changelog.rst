@@ -1,3 +1,11 @@
+1.1
+---
+
+* Dropped all the environments excced end of support: Python 3.5 and older, Django 2.1 and lower;
+* Get rid of some legacy;
+* Switched on poetry instead of pipenv.
+
+
 1.0.5
 -----
 
