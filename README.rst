@@ -5,8 +5,6 @@ django-generic-helpers
 .. image:: https://badge.fury.io/py/django-generic-helpers.svg
    :target: http://badge.fury.io/py/django-generic-helpers
 
-.. image:: https://travis-ci.org/marazmiki/django-generic-helpers.svg?branch=master
-   :target: https://travis-ci.org/marazmiki/django-generic-helpers
 
 .. image:: https://coveralls.io/repos/marazmiki/django-generic-helpers/badge.svg?branch=master
    :target: https://coveralls.io/r/marazmiki/django-generic-helpers?branch=master
@@ -27,7 +25,7 @@ django-generic-helpers
    :alt: Supported Django versions
 
 
-The application provides some syntax sugar for working with Django's `generic relations <https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations>`_
+The application provides some syntax sugar for working with Django's `generic relations <https://docs.djangoproject.com/en/dev/ref/contrib/contenttypes/#generic-relations>`_
 
 
 
