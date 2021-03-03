@@ -11,7 +11,6 @@ release:
 	make check
 	twine upload dist/*
 
-
 .PHONY: clean
 clean:
 	rm -rf *.egg *.egg-info
@@ -22,12 +21,12 @@ clean:
 .PHONY: patch
 patch:
 	echo "Making a patch release"
-	pipenv run bump2version patch
+	poetry run bump2version --config-file bump2version.ini patch
 
 .PHONY: minor
 minor:
 	echo "Making a minor release"
-	pipenv run bump2version minor
+	poetry run bump2version --config-file bump2version.ini minor
 
 
 .PHONY: push
