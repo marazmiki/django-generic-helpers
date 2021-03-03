@@ -19,8 +19,7 @@ matrix:
     - { python: "3.9", dist: xenial, env: TOXENV=py39-dj31  }
 
 install:
-  - pip install -qU tox coveralls
-  - pip install -e .
+  - pip install -qU tox tox-travis coveralls
 
 script:
   - tox
