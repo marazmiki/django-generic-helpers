@@ -1,3 +1,4 @@
+import django
 from django.db import models
 
 from .utils import ct, resolve_generic_relations
@@ -35,7 +36,14 @@ class GenericQuerySet(models.query.QuerySet):
         if len(gr_fields) != 1:
             raise TypeError('It works only for models where there is the '
                             'only generic relation field')
-        return self.filter(**{list(gr_fields.keys())[0]: content_object})
+        if django.__version__ >= '3.2':
+            fields = list(gr_fields.values())[0]
+            return self.filter(**{
+                fields['ct_field']: ct(content_object),
+                fields['fk_field']: content_object.pk,
+            })
+        else:
+            return self.filter(**{list(gr_fields.keys())[0]: content_object})
 
     def get_for_model(self, model):
         return self.filter(**{self.gr_field: ct(model)})
