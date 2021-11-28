@@ -17,19 +17,16 @@ class GenericQuerySet(models.query.QuerySet):
         If there are "generic foreign keys" inside the kwargs, it also will
         be handled correctly.
         """
-        return super(GenericQuerySet, self).create(
-            **resolve_generic_relations(self.model, kwargs)
-        )
+        return super().create(**resolve_generic_relations(self.model, kwargs))
 
-    def _filter_or_exclude(self, negate, *args, **kwargs):
-        """
-        Correctly resolves "generic foreign keys" inside the kwargs, if there.
-        """
-        return super(GenericQuerySet, self)._filter_or_exclude(
-            negate,
-            *args,
-            **resolve_generic_relations(self.model, kwargs)
-        )
+    if django.__version__ >= '3.2':
+        def _filter_or_exclude(self, negate, args, kwargs):
+            new_kwargs = resolve_generic_relations(self.model, kwargs)
+            return super()._filter_or_exclude(negate, args, new_kwargs)
+    else:
+        def _filter_or_exclude(self, negate, *args, **kwargs):
+            new_kwargs = resolve_generic_relations(self.model, kwargs)
+            return super()._filter_or_exclude(negate, *args, **new_kwargs)
 
     def get_for_object(self, content_object):
         gr_fields = getattr(self.model, '_gr_fields', {})

@@ -1,3 +1,9 @@
+1.1.1
+-----
+* A sad fix: forgot to declare Python 3.10 support in ``pyproject.toml``
+* Also, added a new test for manager, that revealed a bug with queryset on ``Django 3.2+``
+* Does not use Python 2.x syntax for ``super()`` anymore
+
 1.1
 ---
 

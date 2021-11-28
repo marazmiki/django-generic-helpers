@@ -10,8 +10,7 @@ def cache_key(model_class):
         name = model_class.__name__
     except AttributeError:
         name = model_class.__class__.__name__
-    return 'ct-for-{app_label}:{name}'.format(app_label=app_label,
-                                              name=name)
+    return 'ct-for-{app_label}:{name}'.format(app_label=app_label, name=name)
 
 
 def resolve(model_class):
@@ -32,19 +31,15 @@ def ct(model_class):
 def resolve_generic_relations(model_class, filter_kwargs):
     gr_fields = getattr(model_class, '_gr_fields', {})
     new_filters = {}
-
     for field in list(filter_kwargs.keys()):
         if field not in gr_fields:
             new_filters[field] = filter_kwargs[field]
         else:
             content_object = filter_kwargs[field]
-
             ct_field = gr_fields[field]['ct_field']
             fk_field = gr_fields[field]['fk_field']
-
             new_filters.update(**{
                 ct_field: ct(content_object) if content_object else None,
                 fk_field: content_object.pk if content_object else None
             })
-
     return new_filters

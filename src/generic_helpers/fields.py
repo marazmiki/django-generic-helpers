@@ -47,10 +47,10 @@ class GenericRelationField(models.ForeignKey):
             'on_delete': models.CASCADE,
         })
 
-        super(GenericRelationField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def check(self, **kwargs):
-        errors = super(GenericRelationField, self).check(**kwargs)
+        errors = super().check(**kwargs)
         errors.extend(checks.check_limit_choices(self))
         errors.extend(checks.check_field_type(self))
         return errors
