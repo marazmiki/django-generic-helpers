@@ -1,3 +1,9 @@
+1.2
+---
+
+* Added support for ``Django 4.x``
+
+
 1.1.1
 -----
 * A sad fix: forgot to declare Python 3.10 support in ``pyproject.toml``
